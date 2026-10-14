@@ -41,16 +41,7 @@
 
 1. Открыть [v0.dev](https://v0.dev).
 2. По очереди вставить три промпта из `hw3/ui_concepts/v0_prompts.md`.
-3. Сохранить скриншоты в `hw3/ui_concepts/`. **Одному концепту можно несколько файлов** (если экран не влезает в один кадр или есть mobile/desktop):
-
-   ```
-   concept-1-01.png   concept-1-02.png   ...
-   concept-2-01.png   concept-2-02.png   ...
-   concept-3-01.png   concept-3-02.png   ...
-   ```
-
-   Достаточно **минимум 1 скрин на концепт**. Формат PNG или JPG. Подписи в имени опционально: `concept-1-01-home.png`, `concept-1-02-mobile.png`.
-4. Написать оркестратору — вшьём все кадры в `ui_description.md`, допишем обоснование выбора и сделаем push.
+3. Скриншоты v0 лежат в `hw3/ui_concepts/` (несколько кадров на концепт, desktop + mobile). Описание и **выбор Concept 1** — в [`hw3/ui_concepts/ui_description.md`](hw3/ui_concepts/ui_description.md).
 
 ## Вне скоупа этого коммита
 
