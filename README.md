@@ -1,48 +1,37 @@
-# NutriDay — домашние задания МИИ (ДЗ1–ДЗ3)
+# NutriDay — домашние задания МИИ (ДЗ1–ДЗ4)
 
-Учебный репозиторий курса: сравнительный анализ AI-агентов, система правил/промптов и продуктовое ТЗ для MVP **NutriDay** (заказ готовых наборов здорового питания).
+Учебный репозиторий: AI-инструменты, промпты, ТЗ и **frontend MVP** NutriDay.
 
-**Стек (контекст):** Next.js App Router + TypeScript + Tailwind CSS · AI-агент: Cursor  
+**Стек ДЗ4:** Vite + React + TypeScript + Tailwind · AI-агент: Cursor  
 **Репозиторий:** https://github.com/Shamil331/mii_kai
 
 ## Структура
 
 | Папка | ДЗ | Содержание |
 |-------|-----|------------|
-| [hw1/](hw1/) | ДЗ1 | Сравнительная таблица Cloud vs IDE агентов, отчёт, место под скриншоты |
-| [hw2/](hw2/) | ДЗ2 | Правила Cursor, RTCF-шаблоны, Chain-of-Thought, тест до/после правил |
-| [hw3/](hw3/) | ДЗ3 | Описание продукта, User Stories, ТЗ, промпты v0 и описания UI-концепций |
+| [hw1/](hw1/) | ДЗ1 | Сравнение Cloud vs IDE агентов |
+| [hw2/](hw2/) | ДЗ2 | Правила Cursor, RTCF, CoT, testing |
+| [hw3/](hw3/) | ДЗ3 | Продукт, stories, ТЗ, UI-концепции v0 |
+| [frontend/](frontend/) | ДЗ4 | Рабочее SPA NutriDay |
+| [hw4/](hw4/) | ДЗ4 | `development_report.md` |
 
-Краткий бриф продукта: [SHARED_BRIEF.md](SHARED_BRIEF.md).
+Бриф: [SHARED_BRIEF.md](SHARED_BRIEF.md).
 
-## ДЗ1 — быстрые ссылки
+## ДЗ4 — запуск
 
-- [hw1/comparison_table.md](hw1/comparison_table.md)
-- [hw1/report.md](hw1/report.md)
-- [hw1/screenshots/](hw1/screenshots/) — сюда можно положить скрины Cursor
+```bash
+cd frontend
+npm install
+npm test
+npm run dev
+```
 
-## ДЗ2 — быстрые ссылки
+Отчёт: [hw4/development_report.md](hw4/development_report.md).
 
-- [hw2/hw_ai_rules.md](hw2/hw_ai_rules.md)
-- [hw2/rules.md](hw2/rules.md) · [hw2/.cursorrules](hw2/.cursorrules)
-- [hw2/prompt_templates.md](hw2/prompt_templates.md)
-- [hw2/prompt_methodology.md](hw2/prompt_methodology.md)
-- [hw2/testing.md](hw2/testing.md)
+## ДЗ1–ДЗ3
 
-## ДЗ3 — быстрые ссылки
+- [hw1/](hw1/) · [hw2/](hw2/) · [hw3/](hw3/) (UI: Concept 1 выбран)
 
-- [hw3/project_description.md](hw3/project_description.md)
-- [hw3/user_stories.md](hw3/user_stories.md)
-- [hw3/technical_specification.md](hw3/technical_specification.md)
-- [hw3/ui_concepts/v0_prompts.md](hw3/ui_concepts/v0_prompts.md) — **вставить в v0.dev**
-- [hw3/ui_concepts/ui_description.md](hw3/ui_concepts/ui_description.md)
+## Дальше
 
-### Вариант A (UI): что сделать вручную
-
-1. Открыть [v0.dev](https://v0.dev).
-2. По очереди вставить три промпта из `hw3/ui_concepts/v0_prompts.md`.
-3. Скриншоты v0 лежат в `hw3/ui_concepts/` (несколько кадров на концепт, desktop + mobile). Описание и **выбор Concept 1** — в [`hw3/ui_concepts/ui_description.md`](hw3/ui_concepts/ui_description.md).
-
-## Вне скоупа этого коммита
-
-ДЗ4–ДЗ6 (frontend-приложение, backend, CI/CD) — следующие этапы.
+ДЗ5 — Backend (Supabase) + интеграция с `frontend/`.
