@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '@/context/CartContext'
-import { MEAL_SETS, durationLabel, findMealSet, formatPrice } from '@/lib/catalog'
+import { useCatalog } from '@/context/CatalogContext'
+import { durationLabel, findMealSet, formatPrice } from '@/lib/catalog'
 
 export function CartPage() {
   const { items, totalRub, changeQty } = useCart()
+  const { meals } = useCatalog()
 
   if (items.length === 0) {
     return (
@@ -29,7 +31,7 @@ export function CartPage() {
         <p className="mt-1 text-sm text-ink/60">Готовые наборы к заказу</p>
         <ul className="mt-6 space-y-4">
           {items.map((item) => {
-            const meal = findMealSet(MEAL_SETS, item.mealSetId)
+            const meal = findMealSet(meals, item.mealSetId)
             if (!meal) return null
             const line = meal.priceRub * item.quantity
             return (
@@ -81,7 +83,7 @@ export function CartPage() {
         <p className="text-xs uppercase tracking-wide text-ink/50">Итого</p>
         <p className="mt-2 text-3xl font-semibold text-forest">{formatPrice(totalRub)}</p>
         <p className="mt-2 text-xs text-ink/60">
-          Доставка рассчитывается при оформлении. Ближайшая дата — через 2 дня.
+          Для оформления нужен вход в аккаунт. Заказ сохранится в Supabase.
         </p>
         <Link
           to="/checkout"

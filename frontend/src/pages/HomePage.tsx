@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { MealCard } from '@/components/MealCard'
 import { useCart } from '@/context/CartContext'
+import { useCatalog } from '@/context/CatalogContext'
 import {
   DIET_LABELS,
-  MEAL_SETS,
   durationLabel,
   filterMealSets,
   findMealSet,
@@ -15,24 +15,22 @@ type Filter = DietType | 'all'
 
 export function HomePage() {
   const { addMeal } = useCart()
-  const [loading, setLoading] = useState(true)
+  const { meals, loading, error, usingFallback, reload } = useCatalog()
   const [filter, setFilter] = useState<Filter>('all')
-  const [selectedId, setSelectedId] = useState<string | null>(MEAL_SETS[0]?.id ?? null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
   const [showOnboarding, setShowOnboarding] = useState(() => {
     return localStorage.getItem('nutriday-onboarding-done') !== '1'
   })
 
   useEffect(() => {
-    const t = window.setTimeout(() => setLoading(false), 400)
-    return () => window.clearTimeout(t)
-  }, [])
+    if (!selectedId && meals[0]) {
+      setSelectedId(meals[0].id)
+    }
+  }, [meals, selectedId])
 
-  const visible = useMemo(
-    () => filterMealSets(MEAL_SETS, filter),
-    [filter],
-  )
-  const selected = selectedId ? findMealSet(MEAL_SETS, selectedId) : undefined
+  const visible = useMemo(() => filterMealSets(meals, filter), [meals, filter])
+  const selected = selectedId ? findMealSet(meals, selectedId) : undefined
 
   function dismissOnboarding() {
     localStorage.setItem('nutriday-onboarding-done', '1')
@@ -41,7 +39,7 @@ export function HomePage() {
 
   function handleAdd(id: string) {
     addMeal(id)
-    const meal = findMealSet(MEAL_SETS, id)
+    const meal = findMealSet(meals, id)
     setToast(meal ? `«${meal.name}» добавлен в корзину` : 'Добавлено в корзину')
     window.setTimeout(() => setToast(null), 2200)
   }
@@ -58,7 +56,7 @@ export function HomePage() {
               <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-ink/80">
                 <li>Выберите тип рациона и набор на день или неделю</li>
                 <li>Соберите корзину и укажите адрес</li>
-                <li>Оплатите — доставка не раньше чем через 2 дня</li>
+                <li>Войдите и оплатите — доставка не раньше чем через 2 дня</li>
               </ol>
             </div>
             <div className="flex gap-2">
@@ -81,6 +79,16 @@ export function HomePage() {
         </section>
       ) : null}
 
+      {error ? (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-sm text-amber-950">
+          {error}{' '}
+          <button type="button" className="underline" onClick={reload}>
+            Обновить
+          </button>
+          {usingFallback ? ' · после применения SQL-миграции данные придут из Supabase' : null}
+        </div>
+      ) : null}
+
       <section className="mx-auto grid max-w-6xl gap-0 px-4 py-8 md:grid-cols-2 md:items-stretch">
         <div className="flex flex-col justify-center rounded-l-3xl bg-stone/40 p-8 md:p-12">
           <p className="text-xs uppercase tracking-[0.2em] text-ink/50">
@@ -99,7 +107,7 @@ export function HomePage() {
           >
             Выбрать наборы →
           </a>
-          <p className="mt-3 text-xs text-ink/50">Меню обновляем каждую неделю</p>
+          <p className="mt-3 text-xs text-ink/50">Каталог загружается из Supabase</p>
         </div>
         <div
           className="min-h-64 rounded-r-3xl bg-gradient-to-br from-forest to-stone-400/80 p-6 text-white md:min-h-[22rem]"

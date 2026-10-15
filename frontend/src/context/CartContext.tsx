@@ -7,8 +7,8 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { useCatalog } from '@/context/CatalogContext'
 import { addToCart, cartItemsCount, cartTotalRub, setQuantity } from '@/lib/cart'
-import { MEAL_SETS } from '@/lib/catalog'
 import type { CartItem, ConfirmedOrder } from '@/types/meal'
 
 const STORAGE_KEY = 'nutriday-cart-v1'
@@ -47,6 +47,7 @@ function readStoredItems(): CartItem[] {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { meals } = useCatalog()
   const [items, setItems] = useState<CartItem[]>(() => readStoredItems())
   const [lastOrder, setLastOrder] = useState<ConfirmedOrder | null>(null)
 
@@ -68,14 +69,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () => ({
       items,
       count: cartItemsCount(items),
-      totalRub: cartTotalRub(items, MEAL_SETS),
+      totalRub: cartTotalRub(items, meals),
       addMeal,
       changeQty,
       clear,
       lastOrder,
       setLastOrder,
     }),
-    [items, addMeal, changeQty, clear, lastOrder],
+    [items, meals, addMeal, changeQty, clear, lastOrder],
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

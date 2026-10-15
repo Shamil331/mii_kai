@@ -10,3 +10,10 @@ node_modules/
 dist/
 .cursor/
 *.tmp
+
+# accidental root npm
+/package.json
+/package-lock.json
+/node_modules/
+/scripts/node_modules/
+

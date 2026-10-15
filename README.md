@@ -1,37 +1,45 @@
-# NutriDay — домашние задания МИИ (ДЗ1–ДЗ4)
+# NutriDay — домашние задания МИИ (ДЗ1–ДЗ5)
 
-Учебный репозиторий: AI-инструменты, промпты, ТЗ и **frontend MVP** NutriDay.
+Учебный репозиторий: AI-инструменты, ТЗ и fullstack-MVP **NutriDay**.
 
-**Стек ДЗ4:** Vite + React + TypeScript + Tailwind · AI-агент: Cursor  
-**Репозиторий:** https://github.com/Shamil331/mii_kai
+**Стек:** Vite + React + TypeScript + Tailwind · **Supabase** (Postgres + Auth + RLS) · Cursor  
+**Репозиторий:** https://github.com/Shamil331/mii_kai  
+**Деплой фронта:** https://frontend-psi-brown-83.vercel.app
 
 ## Структура
 
 | Папка | ДЗ | Содержание |
 |-------|-----|------------|
-| [hw1/](hw1/) | ДЗ1 | Сравнение Cloud vs IDE агентов |
-| [hw2/](hw2/) | ДЗ2 | Правила Cursor, RTCF, CoT, testing |
-| [hw3/](hw3/) | ДЗ3 | Продукт, stories, ТЗ, UI-концепции v0 |
-| [frontend/](frontend/) | ДЗ4 | Рабочее SPA NutriDay |
+| [hw1/](hw1/) | ДЗ1 | Сравнение AI-агентов |
+| [hw2/](hw2/) | ДЗ2 | Правила Cursor, RTCF, CoT |
+| [hw3/](hw3/) | ДЗ3 | Продукт, stories, ТЗ, UI v0 |
+| [frontend/](frontend/) | ДЗ4–5 | SPA + интеграция Supabase |
 | [hw4/](hw4/) | ДЗ4 | `development_report.md` |
+| [hw5/](hw5/) | ДЗ5 | `backend_documentation.md` |
+| [supabase/migrations/](supabase/migrations/) | ДЗ5 | SQL-схема, RLS, seed |
 
-Бриф: [SHARED_BRIEF.md](SHARED_BRIEF.md).
-
-## ДЗ4 — запуск
+## Быстрый старт
 
 ```bash
 cd frontend
+cp .env.example .env   # заполните URL + anon key
 npm install
 npm test
 npm run dev
 ```
 
-Отчёт: [hw4/development_report.md](hw4/development_report.md).
+**Важно:** `VITE_SUPABASE_URL` = `https://<ref>.supabase.co`, не URL дашборда.
 
-## ДЗ1–ДЗ3
+### Миграция БД (один раз)
 
-- [hw1/](hw1/) · [hw2/](hw2/) · [hw3/](hw3/) (UI: Concept 1 выбран)
+1. [SQL Editor проекта](https://supabase.com/dashboard/project/smrcbkjchmdntfbhelff/sql/new)  
+2. Вставить [`supabase/migrations/001_nutriday_init.sql`](supabase/migrations/001_nutriday_init.sql) → Run  
 
-## Дальше
+Документация API: [hw5/backend_documentation.md](hw5/backend_documentation.md).
 
-ДЗ5 — Backend (Supabase) + интеграция с `frontend/`.
+## Сценарий проверки ДЗ5
+
+1. Регистрация / вход (`/auth`)  
+2. Каталог грузится из `meal_sets`  
+3. Корзина → checkout → заказ в `orders` / `order_items`  
+4. `/orders` показывает заказы текущего пользователя  

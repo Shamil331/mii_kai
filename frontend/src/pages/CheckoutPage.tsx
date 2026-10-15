@@ -1,12 +1,17 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { useAuth } from '@/context/AuthContext'
 import { useCart } from '@/context/CartContext'
+import { useCatalog } from '@/context/CatalogContext'
+import { createOrder } from '@/lib/api'
 import { isAddressValid } from '@/lib/cart'
-import { MEAL_SETS, findMealSet, formatPrice } from '@/lib/catalog'
+import { formatPrice } from '@/lib/catalog'
 import { formatRuDate, getMinDeliveryDate, isDeliveryDateAllowed } from '@/lib/dates'
 
 export function CheckoutPage() {
   const { items, totalRub, clear, setLastOrder } = useCart()
+  const { meals } = useCatalog()
+  const { user } = useAuth()
   const navigate = useNavigate()
   const minDate = useMemo(() => getMinDeliveryDate(), [])
   const [deliveryDate, setDeliveryDate] = useState(minDate)
@@ -18,6 +23,10 @@ export function CheckoutPage() {
 
   if (items.length === 0) {
     return <Navigate to="/cart" replace />
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace state={{ from: '/checkout' }} />
   }
 
   async function onSubmit(e: FormEvent) {
@@ -36,37 +45,27 @@ export function CheckoutPage() {
     }
     setAddressError(null)
 
-    setSubmitting(true)
-    // Mock payment: simulate network; reject if address contains "fail"
-    await new Promise((r) => setTimeout(r, 600))
     if (address.toLowerCase().includes('fail')) {
-      setSubmitting(false)
-      setPayError('Оплата отклонена. Корзина сохранена — попробуйте снова.')
+      setPayError('Оплата отклонена (демо). Корзина сохранена — попробуйте снова.')
       return
     }
 
-    const orderItems = items
-      .map((item) => {
-        const meal = findMealSet(MEAL_SETS, item.mealSetId)
-        if (!meal) return null
-        return {
-          name: meal.name,
-          quantity: item.quantity,
-          lineTotalRub: meal.priceRub * item.quantity,
-        }
-      })
-      .filter((x): x is NonNullable<typeof x> => x !== null)
-
-    const orderId = `ND-${Date.now().toString(36).toUpperCase()}`
-    setLastOrder({
-      id: orderId,
+    setSubmitting(true)
+    const result = await createOrder({
       deliveryDate,
       address: address.trim(),
-      totalRub,
-      items: orderItems,
+      items,
+      catalog: meals,
     })
-    clear()
     setSubmitting(false)
+
+    if (!result.ok) {
+      setPayError(result.error)
+      return
+    }
+
+    setLastOrder(result.data)
+    clear()
     navigate('/confirmation')
   }
 
@@ -78,6 +77,8 @@ export function CheckoutPage() {
       <h1 className="mt-4 text-3xl font-semibold text-forest">Оформление</h1>
       <p className="mt-1 text-sm text-ink/60">
         Сумма заказа: <strong>{formatPrice(totalRub)}</strong>
+        <br />
+        Аккаунт: {user.email}
       </p>
 
       <form className="mt-8 space-y-5 rounded-2xl border border-stone bg-white p-5" onSubmit={onSubmit}>
@@ -127,10 +128,11 @@ export function CheckoutPage() {
           disabled={submitting}
           className="flex min-h-11 w-full items-center justify-center rounded-full bg-forest text-sm text-white hover:bg-forest-dark disabled:opacity-60"
         >
-          {submitting ? 'Оплата…' : 'Оплатить (демо)'}
+          {submitting ? 'Сохранение заказа…' : 'Оплатить и сохранить в Supabase'}
         </button>
         <p className="text-xs text-ink/50">
-          Демо-оплата без реального провайдера. Для имитации отказа введите «fail» в адресе.
+          Демо-оплата: заказ пишется в таблицы orders / order_items. Отказ — если в адресе есть
+          «fail».
         </p>
       </form>
     </div>
