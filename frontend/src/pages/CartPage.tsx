@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useCart } from '@/context/CartContext'
 import { useCatalog } from '@/context/CatalogContext'
 import { durationLabel, findMealSet, formatPrice } from '@/lib/catalog'
+import { mealImageUrl } from '@/lib/mealImages'
 
 export function CartPage() {
   const { items, totalRub, changeQty } = useCart()
@@ -34,14 +35,23 @@ export function CartPage() {
             const meal = findMealSet(meals, item.mealSetId)
             if (!meal) return null
             const line = meal.priceRub * item.quantity
+            const imageUrl = mealImageUrl(meal.id)
             return (
               <li
                 key={item.mealSetId}
                 className="flex flex-col gap-4 rounded-2xl border border-stone bg-white p-4 sm:flex-row sm:items-center"
               >
-                <div
-                  className={`h-20 w-full rounded-xl bg-gradient-to-br sm:w-24 ${meal.imageGradient}`}
-                />
+                {imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt=""
+                    className="h-20 w-full rounded-xl object-cover sm:w-24"
+                  />
+                ) : (
+                  <div
+                    className={`h-20 w-full rounded-xl bg-gradient-to-br sm:w-24 ${meal.imageGradient}`}
+                  />
+                )}
                 <div className="flex-1">
                   <h2 className="font-semibold">{meal.name}</h2>
                   <p className="text-sm text-ink/60">

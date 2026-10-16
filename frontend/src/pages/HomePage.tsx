@@ -9,6 +9,7 @@ import {
   findMealSet,
   formatPrice,
 } from '@/lib/catalog'
+import { HERO_IMAGE, mealImageUrl } from '@/lib/mealImages'
 import type { DietType } from '@/types/meal'
 
 type Filter = DietType | 'all'
@@ -31,6 +32,7 @@ export function HomePage() {
 
   const visible = useMemo(() => filterMealSets(meals, filter), [meals, filter])
   const selected = selectedId ? findMealSet(meals, selectedId) : undefined
+  const selectedImage = selected ? mealImageUrl(selected.id) : undefined
 
   function dismissOnboarding() {
     localStorage.setItem('nutriday-onboarding-done', '1')
@@ -110,15 +112,23 @@ export function HomePage() {
           <p className="mt-3 text-xs text-ink/50">Каталог загружается из Supabase</p>
         </div>
         <div
-          className="min-h-64 rounded-r-3xl bg-gradient-to-br from-forest to-stone-400/80 p-6 text-white md:min-h-[22rem]"
+          className="relative min-h-64 overflow-hidden rounded-r-3xl md:min-h-[22rem]"
           aria-hidden
         >
-          <p className="text-sm uppercase tracking-wide text-white/80">
-            Еда, которая заботится
-          </p>
-          <p className="mt-auto pt-24 text-lg md:pt-40">
-            Фиксированное меню · Без сложной кастомизации · Без AI-upsell
-          </p>
+          <img
+            src={HERO_IMAGE}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-forest/80 via-forest/25 to-transparent" />
+          <div className="relative flex h-full min-h-64 flex-col justify-between p-6 text-white md:min-h-[22rem]">
+            <p className="text-sm uppercase tracking-wide text-white/90">
+              Еда, которая заботится
+            </p>
+            <p className="text-lg">
+              Фиксированное меню · Без сложной кастомизации · Без AI-upsell
+            </p>
+          </div>
         </div>
       </section>
 
@@ -173,6 +183,13 @@ export function HomePage() {
             <aside className="h-fit rounded-2xl border border-stone bg-white p-5 shadow-sm lg:sticky lg:top-24">
               {selected ? (
                 <>
+                  {selectedImage ? (
+                    <img
+                      src={selectedImage}
+                      alt=""
+                      className="mb-4 h-36 w-full rounded-xl object-cover"
+                    />
+                  ) : null}
                   <p className="text-xs uppercase tracking-wide text-ink/50">
                     Состав набора
                   </p>

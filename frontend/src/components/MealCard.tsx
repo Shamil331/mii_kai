@@ -1,5 +1,6 @@
 import type { MealSet } from '@/types/meal'
 import { durationLabel, formatPrice } from '@/lib/catalog'
+import { mealImageUrl } from '@/lib/mealImages'
 
 interface MealCardProps {
   meal: MealSet
@@ -9,6 +10,8 @@ interface MealCardProps {
 }
 
 export function MealCard({ meal, selected, onSelect, onAdd }: MealCardProps) {
+  const imageUrl = mealImageUrl(meal.id)
+
   return (
     <article
       className={`overflow-hidden rounded-2xl border bg-white shadow-sm transition ${
@@ -17,15 +20,25 @@ export function MealCard({ meal, selected, onSelect, onAdd }: MealCardProps) {
     >
       <button
         type="button"
-        className={`relative flex h-40 w-full items-end bg-gradient-to-br p-3 text-left text-white ${meal.imageGradient}`}
+        className={`relative flex h-40 w-full items-end overflow-hidden p-3 text-left text-white ${
+          imageUrl ? 'bg-stone' : `bg-gradient-to-br ${meal.imageGradient}`
+        }`}
         onClick={() => onSelect(meal.id)}
         aria-label={`Подробнее: ${meal.name}`}
       >
-        <span className="rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-forest">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : null}
+        <span className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+        <span className="relative rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-forest">
           {durationLabel(meal.duration)}
         </span>
         {selected ? (
-          <span className="absolute right-3 top-3 rounded-full bg-forest px-2 py-1 text-xs">
+          <span className="absolute right-3 top-3 z-10 rounded-full bg-forest px-2 py-1 text-xs">
             Выбран
           </span>
         ) : null}
